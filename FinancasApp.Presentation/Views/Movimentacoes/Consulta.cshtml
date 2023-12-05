@@ -1,0 +1,36 @@
+﻿@model FinancasApp.Presentation.Models.Movimentacoes.MovimentacoesConsultaViewModel
+
+@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<h4>Consulta de movimentações</h4>
+<p>Consulte suas contas a pagar e receber.</p>
+
+@using (Html.BeginForm())
+{
+    <div class="row mt-2">
+        <div class="col">
+            <label>Data de início:</label>
+            @Html.TextBoxFor(model => model.DataMin,
+                     new { @class = "form-control", @type = "date" })
+            <span class="text-danger">
+                @Html.ValidationMessageFor(model => model.DataMin)
+            </span>
+        </div>
+        <div class="col">
+            <label>Data de fim:</label>
+            @Html.TextBoxFor(model => model.DataMax,
+                     new { @class = "form-control", @type = "date" })
+            <span class="text-danger">
+                @Html.ValidationMessageFor(model => model.DataMax)
+            </span>
+        </div>
+        <div class="col">
+            <input type="submit" class="btn btn-success mt-4"
+                   value="Pesquisar Movimentações" />
+        </div>
+    </div>
+}
+
+

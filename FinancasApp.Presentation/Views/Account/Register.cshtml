@@ -1,0 +1,77 @@
+﻿@model FinancasApp.Presentation.Models.Account.RegisterViewModel
+@{
+    ///definindo a pagina de layout
+    Layout = "~/Views/Shared/_AccountLayout.cshtml";
+}
+
+<div class="text-center">
+    <h3>Aplicativo de Finanças</h3>
+    <p>Crie sua conta de usuário</p>
+    <hr />
+</div>
+@using(Html.BeginForm())
+{
+    <div class="mt-2">
+        <label>Nome do usuário:</label>
+        @Html.TextBoxFor(model => model.Nome, new
+            {
+                @placeholder = "Ex.: João das Neves ",
+                @class = "form-control"
+            })
+           <span class="text-danger">
+            @Html.ValidationMessageFor(model => model.Nome)
+           </span>
+        
+    </div>
+
+
+    <div class="mt-2">
+        <label>Email de acesso:</label>
+        @Html.TextBoxFor(model => model.Email, new
+            {
+                @placeholder = "Ex.: email@email.com ",
+                @class = "form-control"
+            })
+       <span class="text-danger">
+           @Html.ValidationMessageFor(model => model.Email)
+       </span>
+    </div>
+
+
+    <div class="mt-2">
+        <label>Senha de acesso:</label>
+        @Html.TextBoxFor(model => model.Senha, new
+            {
+                @placeholder = "******************",
+                @class = "form-control"
+            })
+           <span class="text-danger">
+            @Html.ValidationMessageFor(model => model.Senha)
+           </span>
+    </div>
+
+
+
+    <div class="mt-2">
+        <label>Confirme a sua senha:</label>
+        @Html.TextBoxFor(model => model.SenhaConfirmacao, new
+            {
+                @placeholder = "******************",
+                @class = "form-control"
+            })
+               <span class="text-danger">
+            @Html.ValidationMessageFor(model => model.SenhaConfirmacao)
+               </span>
+        
+    </div>
+
+
+    <div class="mt-2 d-grid">
+        <input class="btn btn-primary" type="submit" value="Cadastrar" />
+    </div>
+    <div class="mt-2 d-grid">
+        <a href="/Account/Login" class="btn btn-light">
+            Já possui conta? <strong>Acesse aqui!</strong>
+        </a>
+    </div>
+}
