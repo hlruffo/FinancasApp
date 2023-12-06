@@ -58,7 +58,7 @@
                             <td>@movimentacao.Valor?.ToString("c")</td>
                             <td>@movimentacao.Tipo.ToString()</td>
                             <td>@movimentacao.Nome</td>
-                            <td></td>
+                            <td>@movimentacao.Categoria?.Nome</td>
                             <td>
                                 <a href="/Movimentacoes/Edicao" class="btn btn-primary">Editar</a>
                                 <a href="/Movimentacoes/Exclusão" class="btn btn-danger">Excluir</a>
