@@ -1,6 +1,7 @@
 ﻿using FinancasApp.Domain.Entities;
 using FinancasApp.Domain.Interfaces.Repositories;
 using FinancasApp.Infra.Data.Contexts;
+using Microsoft.EntityFrameworkCore;
 
 namespace FinancasApp.Infra.Data.Repositories
 {
@@ -14,6 +15,7 @@ namespace FinancasApp.Infra.Data.Repositories
             using (var dataContext = new DataContext())
             {
                 return dataContext.Set<Movimentacao>()
+                    .Include(m =>m.Categoria) // join -> traz os dados da categoria vinculada a movimentação
                     .Where(m => m.Data >= dataMin && m.Data <= dataMax && m.UsuarioId == usuarioId)
                     .OrderBy(m=> m.Data)
                     .ToList();
