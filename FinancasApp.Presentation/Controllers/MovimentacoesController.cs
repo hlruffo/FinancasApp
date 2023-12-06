@@ -102,7 +102,7 @@ namespace FinancasApp.Presentation.Controllers
                     TempData["MensagemErro"] = e.Message;
                 }
             }
-            return View();
+            return View(model);
         }
 
         /// <summary>
