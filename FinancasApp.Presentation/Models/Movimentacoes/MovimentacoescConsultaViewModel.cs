@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using FinancasApp.Domain.Entities;
+using System.ComponentModel.DataAnnotations;
 
 namespace FinancasApp.Presentation.Models.Movimentacoes
 {
@@ -12,6 +13,11 @@ namespace FinancasApp.Presentation.Models.Movimentacoes
 
         [Required(ErrorMessage = "Por favor, informe a data de fim.")]
         public DateTime? DataMax { get; set; }
+
+        /// <summary>
+        /// lista para exibir o resultado da consulta de movimentações
+        /// </summary>
+        public List<Movimentacao>? ListagemMovimentacoes { get; set; }
     }
 }
 

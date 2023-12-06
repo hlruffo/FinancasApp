@@ -88,6 +88,20 @@ namespace FinancasApp.Presentation.Controllers
         [HttpPost]
         public IActionResult Consulta(MovimentacoesConsultaViewModel model)
         {
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    //consultar as movimentações
+                    model.ListagemMovimentacoes = _movimentacaoDomainService?
+                        .Consultar(model.DataMin.Value, model.DataMax.Value, ObterUsuarioAutenticado().Id.Value);
+                }
+                catch(Exception e) 
+                {
+                    TempData["MensagemErro"] = e.Message;
+                }
+            }
             return View();
         }
 
