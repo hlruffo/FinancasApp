@@ -7,6 +7,9 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
+//habilitar o uso de sessões
+builder.Services.AddSession();
+
 //chamando as injeções de dependencia
 DependecyInjection.Register(builder.Services);
 
@@ -33,7 +36,7 @@ if (!app.Environment.IsDevelopment())
 app.UseStaticFiles();
 app.UseMiddleware<CacheControl>();
 app.UseRouting();
-
+app.UseSession();
 app.UseCookiePolicy();
 app.UseAuthentication();
 app.UseAuthorization();
