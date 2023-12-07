@@ -12,7 +12,7 @@
     <div class="row mt-2">
         <div class="col">
             <label>Data de início:</label>
-            @Html.TextBoxFor(model => model.DataMin,
+            @Html.TextBoxFor(model => model.DataMin, "{0:yyyy-MM-dd}",
                      new { @class = "form-control", @type = "date" })
             <span class="text-danger">
                 @Html.ValidationMessageFor(model => model.DataMin)
@@ -20,7 +20,7 @@
         </div>
         <div class="col">
             <label>Data de fim:</label>
-            @Html.TextBoxFor(model => model.DataMax,
+            @Html.TextBoxFor(model => model.DataMax, "{0:yyyy-MM-dd}",
                      new { @class = "form-control", @type = "date" })
             <span class="text-danger">
                 @Html.ValidationMessageFor(model => model.DataMax)
@@ -33,7 +33,7 @@
     </div>
 }
 
-@if(Model != null && Model.ListagemMovimentacoes != null)
+@if (Model != null && Model.ListagemMovimentacoes != null)
 {
     if (Model.ListagemMovimentacoes.Count > 0)
     {
@@ -47,25 +47,28 @@
                         <th>Nome</th>
                         <th>Categoria</th>
                         <th>Operações</th>
-                    </tr>       
-
+                    </tr>
                 </thead>
                 <tbody>
-                    @foreach(var movimentacao in Model.ListagemMovimentacoes)
+                    @foreach (var item in Model.ListagemMovimentacoes)
                     {
                         <tr>
-                            <td>@movimentacao.Data?.ToString("dd/MM/yyyy")</td>
-                            <td>@movimentacao.Valor?.ToString("c")</td>
-                            <td>@movimentacao.Tipo.ToString()</td>
-                            <td>@movimentacao.Nome</td>
-                            <td>@movimentacao.Categoria?.Nome</td>
+                            <td>@item.Data?.ToString("dd/MM/yyyy")</td>
+                            <td>@item.Valor?.ToString("c")</td>
+                            <td>@item.Tipo.ToString()</td>
+                            <td>@item.Nome</td>
+                            <td>@item.Categoria?.Nome</td>
                             <td>
-                                <a href="/Movimentacoes/Edicao" class="btn btn-primary">Editar</a>
-                                <a href="/Movimentacoes/Exclusão/@movimentacao.Id.Value" 
-                                onclick="return confirm('Deseja realmente excluir este item?')"
-                                class="btn btn-danger">Excluir</a>
+                                <a href="/Movimentacoes/Edicao"
+                                   class="btn btn-sm btn-primary">
+                                    Editar
+                                </a>
+                                <a href="/Movimentacoes/Exclusao/@item.Id.Value"
+                                   onclick="return confirm('Deseja excluir este item?');"
+                                   class="btn btn-sm btn-danger">
+                                    Excluir
+                                </a>
                             </td>
-                            
                         </tr>
                     }
                 </tbody>
@@ -82,7 +85,9 @@
     else
     {
         <div class="mt-3">
-            Nenhuma movimentação encontrada no período selecionado
+            Nenhum resultado foi obtido.
         </div>
     }
 }
+
+

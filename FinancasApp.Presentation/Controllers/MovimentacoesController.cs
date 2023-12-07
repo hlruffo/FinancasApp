@@ -13,16 +13,14 @@ namespace FinancasApp.Presentation.Controllers
     [Authorize]
     public class MovimentacoesController : Controller
     {
-
         private ICategoriaDomainService? _categoriaDomainService;
-        private IMovimentacaoDomainService _movimentacaoDomainService;
+        private IMovimentacaoDomainService? _movimentacaoDomainService;
 
-        public MovimentacoesController(ICategoriaDomainService? categoriaDomainService, IMovimentacaoDomainService movimentacaoDomainService)
+        public MovimentacoesController(ICategoriaDomainService? categoriaDomainService, IMovimentacaoDomainService? movimentacaoDomainService)
         {
             _categoriaDomainService = categoriaDomainService;
             _movimentacaoDomainService = movimentacaoDomainService;
         }
-
 
         /// <summary>
         /// Método para abrir a página /Movimentacoes/Cadastro
@@ -30,7 +28,7 @@ namespace FinancasApp.Presentation.Controllers
         public IActionResult Cadastro()
         {
             var model = new MovimentacoesCadastroViewModel();
-            model.ListagemCategorias = obterCategorias();
+            model.ListagemCategorias = ObterCategorias();
             return View(model);
         }
 
@@ -40,37 +38,40 @@ namespace FinancasApp.Presentation.Controllers
         [HttpPost]
         public IActionResult Cadastro(MovimentacoesCadastroViewModel model)
         {
+            //verificar se não há erros de validação
             if (ModelState.IsValid)
             {
                 try
                 {
+                    //capturar os dados da movimentação
                     var movimentacao = new Movimentacao
                     {
-                        Id = Guid.NewGuid(),
+                        Id = Guid.NewGuid(), //chave primária
                         Nome = model.Nome,
                         Data = model.Data,
                         Valor = model.Valor,
                         Descricao = model.Descricao,
                         Tipo = (TipoMovimentacao)model.Tipo,
-                        CategoriaId = model.CategoriaId,
-                        UsuarioId = ObterUsuarioAutenticado().Id
+                        CategoriaId = model.CategoriaId, //chave estrangeira
+                        UsuarioId = ObterUsuarioAutenticado().Id //chave estrangeira
                     };
-                    //gravar movimentacao
+
+                    //gravar a movimentação
                     _movimentacaoDomainService?.Cadastrar(movimentacao);
+
                     TempData["MensagemSucesso"] = "Movimentação cadastrada com sucesso.";
 
-
-                    //limpar campos do cadastro.
+                    //limpar os campos do formulário
                     model = new MovimentacoesCadastroViewModel();
                     ModelState.Clear();
                 }
-                catch (Exception e) 
+                catch (Exception e)
                 {
                     TempData["MensagemErro"] = e.Message;
                 }
             }
 
-            model.ListagemCategorias = obterCategorias();
+            model.ListagemCategorias = ObterCategorias();
             return View(model);
         }
 
@@ -80,26 +81,28 @@ namespace FinancasApp.Presentation.Controllers
         public IActionResult Consulta()
         {
             var model = new MovimentacoesConsultaViewModel();
+
             try
             {
-                //verifica se há data em sessão 
-                if ( HttpContext.Session.GetString("DataMin")!=null &&
-                    HttpContext.Session.GetString("DataMax") != null)
+                //verificando se há datas gravadas em sessão
+                if (HttpContext.Session.GetString("DataMin") != null
+                    && HttpContext.Session.GetString("DataMax") != null)
                 {
-                    
+                    //capturar as datas armazenadas em sessão
                     model.DataMin = DateTime.Parse(HttpContext.Session.GetString("DataMin"));
                     model.DataMax = DateTime.Parse(HttpContext.Session.GetString("DataMax"));
 
-                    //realiza consulta
-                    model.ListagemMovimentacoes = _movimentacaoDomainService.Consultar(model.DataMin.Value, model.DataMax.Value, ObterUsuarioAutenticado().Id.Value);
+                    //realizando a consulta de movimentações
+                    model.ListagemMovimentacoes = _movimentacaoDomainService
+                        .Consultar(model.DataMin.Value, model.DataMax.Value, ObterUsuarioAutenticado().Id.Value);
                 }
-
             }
-            catch(Exception e)
+            catch (Exception e)
             {
-                TempData["MensagemErro"]=e.Message;
+                TempData["MensagemErro"] = e.Message;
             }
-            return View();
+
+            return View(model);
         }
 
         /// <summary>
@@ -108,26 +111,26 @@ namespace FinancasApp.Presentation.Controllers
         [HttpPost]
         public IActionResult Consulta(MovimentacoesConsultaViewModel model)
         {
-
+            //verificar se não há erros de validação
             if (ModelState.IsValid)
             {
                 try
                 {
-                    //consultar as movimentações
+                    //consultar as movimentações e armazenando os dados na classe Model
                     model.ListagemMovimentacoes = _movimentacaoDomainService?
                         .Consultar(model.DataMin.Value, model.DataMax.Value, ObterUsuarioAutenticado().Id.Value);
 
-
-                    //gravar datas em sessão
+                    //gravar as datas em sessão
                     HttpContext.Session.SetString("DataMin", model.DataMin.ToString());
                     HttpContext.Session.SetString("DataMax", model.DataMax.ToString());
-
                 }
-                catch (Exception e) 
+                catch (Exception e)
                 {
                     TempData["MensagemErro"] = e.Message;
                 }
             }
+
+            //retornando a model
             return View(model);
         }
 
@@ -140,42 +143,42 @@ namespace FinancasApp.Presentation.Controllers
         }
 
         /// <summary>
-        /// metodo para gerar a lista de opções para preenchimento do campo de seleção de categorias
+        /// Método para gerar a lista de opções para preenchimento
+        /// do campo de seleção de categorias
         /// </summary>
-        /// <returns> lista de categorias cadastrada no banco de dados</returns>
-        private List<SelectListItem> obterCategorias()
+        private List<SelectListItem> ObterCategorias()
         {
-            //consultar categorias cadastradas no sistemas
+            //consultar as categorias cadastradas no sistema
             var categorias = _categoriaDomainService?.Consultar();
 
-            //criando lista de opções de seleção 
+            //criando uma lista de opções de seleção
             var lista = new List<SelectListItem>();
 
-            //percorrer categorias 
-            foreach(var categoria in categorias)
+            //percorrer todas as categorias obtidas
+            foreach (var item in categorias)
             {
+                //adicionando um item na lista de opções do campo
                 lista.Add(new SelectListItem
                 {
-                    Value = categoria.Id.ToString(), //valor do campo
-                    Text = categoria.Nome //texto exibido no campo 
+                    Value = item.Id.ToString(), //valor do campo
+                    Text = item.Nome //texto exibido no campo
                 });
             }
+
             return lista;
         }
 
         /// <summary>
-        /// metodo para retornar o usuario autenticado no aspnet (cookie)
+        /// Método para retornar o usuário autenticado no AspNet (Cookie)
         /// </summary>
-        /// <returns></returns>
         private UserAuthViewModel ObterUsuarioAutenticado()
         {
-            //ler os dados do arquivo cookie
+            //ler os dados do usuário gravado no arquivo de cookie (json)
             var data = User.Identity.Name;
 
-            //deserealizar e retornar
+            //deserializar os dados
             return JsonConvert.DeserializeObject<UserAuthViewModel>(data);
         }
-
     }
 }
 
