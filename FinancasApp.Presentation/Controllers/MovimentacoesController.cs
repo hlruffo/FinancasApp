@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Newtonsoft.Json;
+using static System.Runtime.InteropServices.JavaScript.JSType;
+using System.Drawing;
 
 namespace FinancasApp.Presentation.Controllers
 {
@@ -137,9 +139,64 @@ namespace FinancasApp.Presentation.Controllers
         /// <summary>
         /// Método para abrir a página /Movimentacoes/Edicao
         /// </summary>
-        public IActionResult Edicao()
+        public IActionResult Edicao(Guid id)
         {
-            return View();
+            var model = new MovimentacoesEdicaoViewModel();
+            try
+            {
+                var movimentacao = _movimentacaoDomainService?.ObterPorId(id);
+                
+                model.Nome = movimentacao.Nome;
+                model.Data = movimentacao.Data;
+                model.Valor = movimentacao.Valor;
+                model.Descricao = movimentacao.Descricao;
+                model.Tipo = (int)movimentacao.Tipo;
+                model.CategoriaId = movimentacao.CategoriaId;            
+            }
+            catch (Exception e)
+            {
+                TempData["MensagemErro"] = e.Message;
+            }
+            model.ListagemCategorias = ObterCategorias();
+            return View(model);
+        }
+
+
+        /// <summary>
+        /// metodo para receber submit post do formulario de edição
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost]
+        public IActionResult Edicao(MovimentacoesEdicaoViewModel model)
+        {
+            if(ModelState.IsValid)
+            {
+                try
+                {
+                    var movimentacao = new Movimentacao
+                    {
+
+                        Id = model.Id,
+                        Nome = model.Nome,
+                        Data = model.Data,
+                        Valor = model.Valor,
+                        Descricao = model.Descricao,
+                        Tipo = (TipoMovimentacao?)model.Tipo,
+                        CategoriaId = model.CategoriaId,
+                        UsuarioId = ObterUsuarioAutenticado().Id
+                    };
+                    _movimentacaoDomainService?.Atualizar(movimentacao);
+                    TempData["MensagemSucesso"] = "Movimentação Atualizada com sucesso.";
+                    return RedirectToAction("Consulta");
+                }
+                catch (Exception e) 
+                {
+                    TempData["MensagemErro"] = e.Message;
+                }
+
+            }
+            model.ListagemCategorias = ObterCategorias();
+            return View(model);
         }
 
         /// <summary>

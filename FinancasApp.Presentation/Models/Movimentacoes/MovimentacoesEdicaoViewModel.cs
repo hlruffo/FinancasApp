@@ -21,7 +21,7 @@ namespace FinancasApp.Presentation.Models.Movimentacoes
         public decimal? Valor { get; set; }
 
         [Required(ErrorMessage = "Por favor, selecionar o tipo da movimentação")]
-        public TipoMovimentacao? Tipo { get; set; }
+        public int? Tipo { get; set; }
 
         /// <summary>
         /// Propriedade que popula o campo de seleção de categorias
