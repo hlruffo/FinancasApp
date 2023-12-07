@@ -143,6 +143,28 @@ namespace FinancasApp.Presentation.Controllers
         }
 
         /// <summary>
+        /// Método para executar a exclusão  /Movimentacoes/Exclusao/{id}
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public IActionResult Exclusao(Guid id)
+        {   
+            try
+            {
+                //realiza a exclusão do registro
+                _movimentacaoDomainService?.Excluir(id);
+                TempData["MensagemSucesso"] = "Movimentação excluída com sucesso ";
+            }
+            catch (Exception e)
+            {
+                TempData["MensagemErro"] = e.Message;
+            }
+
+            //retornar para pagina de consulta
+            return RedirectToAction("Consultar");
+        }
+
+        /// <summary>
         /// Método para gerar a lista de opções para preenchimento
         /// do campo de seleção de categorias
         /// </summary>
