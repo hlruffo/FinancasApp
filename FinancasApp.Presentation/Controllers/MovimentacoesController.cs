@@ -96,8 +96,14 @@ namespace FinancasApp.Presentation.Controllers
                     //consultar as movimentações
                     model.ListagemMovimentacoes = _movimentacaoDomainService?
                         .Consultar(model.DataMin.Value, model.DataMax.Value, ObterUsuarioAutenticado().Id.Value);
+
+
+                    //gravar datas em sessão
+                    HttpContext.Session.SetString("DataMin", model.DataMin.ToString());
+                    HttpContext.Session.SetString("DataMax", model.DataMax.ToString());
+
                 }
-                catch(Exception e) 
+                catch (Exception e) 
                 {
                     TempData["MensagemErro"] = e.Message;
                 }
