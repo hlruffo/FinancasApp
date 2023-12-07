@@ -79,6 +79,22 @@ namespace FinancasApp.Presentation.Controllers
         /// </summary>
         public IActionResult Consulta()
         {
+            try
+            {
+                //verifica se há data em sessão 
+                if ( HttpContext.Session.GetString("DataMin")!=null &&
+                    HttpContext.Session.GetString("DataMax") != null)
+                {
+                    var model = new MovimentacoesConsultaViewModel();
+                    model.DataMin = DateTime.Parse(HttpContext.Session.GetString("DataMin"));
+                    model.DataMax = DateTime.Parse(HttpContext.Session.GetString("DataMax"));
+                }
+
+            }
+            catch(Exception e)
+            {
+                TempData["MensagemErro"]=e.Message;
+            }
             return View();
         }
 
