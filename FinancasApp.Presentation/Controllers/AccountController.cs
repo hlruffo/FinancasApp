@@ -116,6 +116,9 @@ namespace FinancasApp.Presentation.Controllers
             // apagar o cookie com a autorização do user
             HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
 
+            //apagar os dados da sessão
+            HttpContext.Session.Clear();    
+
             //retornar para pagina de login
             return RedirectToAction("Login");
         }
