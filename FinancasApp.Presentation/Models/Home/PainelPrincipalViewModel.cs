@@ -10,7 +10,7 @@
         public decimal? TotalReceitas { get; set; }
         public decimal? TotalDespesas { get; set; }
         public decimal? Saldo { get; set; }
-        public decimal? Situacao { get; set; }
+        public string? Situacao { get; set; }
         public List<ChartViewModel>? GraficoDonut { get; set; }
         public List<ChartViewModel>? GraficoColunas { get; set; }
 
