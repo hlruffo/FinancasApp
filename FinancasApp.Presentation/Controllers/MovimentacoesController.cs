@@ -218,7 +218,7 @@ namespace FinancasApp.Presentation.Controllers
             }
 
             //retornar para pagina de consulta
-            return RedirectToAction("Consultar");
+            return RedirectToAction("Consulta");
         }
 
         /// <summary>
