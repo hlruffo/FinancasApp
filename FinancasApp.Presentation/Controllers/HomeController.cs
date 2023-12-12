@@ -41,6 +41,17 @@ namespace FinancasApp.Presentation.Controllers
                 model.TotalDespesas = movimentacoes.Where(m => m.Tipo == TipoMovimentacao.Despesa).Sum(m => m.Valor);
                 model.Saldo = model.TotalReceitas - model.TotalDespesas;
                 model.Situacao = model.Saldo > 0 ? "Saldo Positivo" : model.Saldo < 0 ? "Saldo devedor" : "Saldo nulo";
+            
+                model.GraficoCategorias = movimentacoes
+                    .GroupBy(m => m.Categoria?.Nome)
+                    .Select(m => new ChartViewModel
+                    {
+                        Nome = m.Key,
+                        Valor = m.Sum(m => m.Valor)
+
+                    }).ToList();
+            
+            
             }
             catch (Exception e)
             {
